@@ -36,15 +36,16 @@ describe('Testes de Transferência', () => {
 
     });
 
-    it('Validar que não é possível transferir de uma conta que não possui saldo suficiente', async () => {
-        createTransfer.variables.value = 10000.01;
+    const testesDeErrosDeNegocio = require('../fixture/requisicoes/transferencia/createTransferWithError.json'); 
+    testesDeErrosDeNegocio.forEach(teste => {
+        it(`Testando a regra relacionada a ${teste.nomeDoTeste}`, async () => {
+            const respostaTransferencia = await request('http://localhost:4000/graphql')
+                .post('')
+                .set('Authorization', `Bearer ${token}`)
+                .send(teste.createTransfer);
 
-        const respostaTransferencia = await request('http://localhost:4000/graphql')
-            .post('')
-            .set('Authorization', `Bearer ${token}`)
-            .send(createTransfer);
-
-        expect(respostaTransferencia.status).to.equal(200);
-        expect(respostaTransferencia.body.errors[0].message).to.equal('Saldo insuficiente');
+            expect(respostaTransferencia.status).to.equal(200);
+            expect(respostaTransferencia.body.errors[0].message).to.equal(teste.mensagemEsperada);
+        });
     });
 });
