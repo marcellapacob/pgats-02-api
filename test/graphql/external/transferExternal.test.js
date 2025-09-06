@@ -39,7 +39,7 @@ describe('Testes de Transferência', () => {
     const testesDeErrosDeNegocio = require('../fixture/requisicoes/transferencia/createTransferWithError.json'); 
     testesDeErrosDeNegocio.forEach(teste => {
         it(`Testando a regra relacionada a ${teste.nomeDoTeste}`, async () => {
-            const respostaTransferencia = await request('http://localhost:4000/graphql')
+            const respostaTransferencia = await request(process.env.BASE_URL_GRAPHQL)
                 .post('')
                 .set('Authorization', `Bearer ${token}`)
                 .send(teste.createTransfer);
