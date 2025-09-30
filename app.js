@@ -1,25 +1,39 @@
+// app.js na raiz do projeto
 const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-const userController = require('./controller/userController');
-const transferController = require('./controller/transferController');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
+const authenticate = require('./graphql/authenticate');
 
 const app = express();
+
+// Middleware para JSON
 app.use(express.json());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/users', userController);
-app.use('/transfers', transferController);
+// --- Configuração ApolloServer (GraphQL) ---
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => authenticate(req),
+});
 
 async function startApolloServer() {
   await server.start();
-  server.applyMiddleware({ app });
-  const PORT = process.env.PORT || 4000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-  });
+  server.applyMiddleware({ app, path: '/graphql' });
 }
 
-startApolloServer();
+// --- Endpoints REST (exemplo) ---
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+// Adicione aqui suas rotas REST, por exemplo:
+// app.post('/transfers', transferController.create);
+
+const PORT = process.env.PORT || 4000;
+
+startApolloServer().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`🚀 GraphQL ready at http://localhost:${PORT}/graphql`);
+  });
+});
 
 module.exports = app;
