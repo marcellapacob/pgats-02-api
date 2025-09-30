@@ -28,13 +28,13 @@ jobs:
     - name: Subir a API GraphQL
       run: npm run start-graphql &
 
-    - name: Esperar as APIs estarem funcionando
-      run: sleep 8
-
     - name: Criar .env
       run: |
-        echo "BASE_URL_REST=${{ secrets.BASE_URL_REST }}" >> .env
-        echo "BASE_URL_GRAPHQL=${{ secrets.BASE_URL_GRAPHQL }}" >> .env
+        echo "BASE_URL_REST=http://localhost:3000" >> .env
+        echo "BASE_URL_GRAPHQL=http://localhost:4000/graphql" >> .env
+
+    - name: Esperar as APIs estarem funcionando
+      run: npx wait-on http://localhost:3000 http://localhost:4000/graphql
 
     - name: Rodar os testes de API via Controller
       run: npm run test-controller
