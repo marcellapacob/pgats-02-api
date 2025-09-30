@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     - name: Rodar os testes de API via Controller
-      run: npm run test-rest-controller
+      run: npm run test-controller
 
     - name: Subir a API Rest
       run: npm run start-rest &
