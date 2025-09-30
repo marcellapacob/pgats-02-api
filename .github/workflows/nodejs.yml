@@ -22,22 +22,25 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    # 4 - Criar um .env para rodar na pipeline
-    - name: Setup environment variables
-      run: |
-        echo "PORT=4000" >> .env
-        echo "BASE_URL_GRAPHQL=http://localhost:4000/graphql" >> .env
-        echo "BASE_URL_REST=http://localhost:3000" >> .env
-
-    # 5 - Subir a API em background e esperar ela estar pronta
-    - name: Start API in background
-      run: |
-        npm start & 
-        npx wait-on http://localhost:4000/graphql
-
     - name: Rodar os testes de API via Controller
-      run: npm run test-controller
+      run: npm run test-rest-controller
 
+    - name: Subir a API Rest
+      run: npm run start-rest &
 
-    - name: Rodar os testes de API via HTTP/GraphQL
-      run: npm run test-external
+    - name: Subir a API GraphQL
+      run: npm run start-graphql &
+
+    - name: Esperar as APIs estarem funcionando
+      run: sleep 8
+
+    - name: Criar .env
+      run: |
+        echo "BASE_URL_REST=${{ secrets.BASE_URL_REST }}" >> .env
+        echo "BASE_URL_GRAPHQL=${{ secrets.BASE_URL_GRAPHQL }}" >> .env
+
+    - name: Rodar os testes External de API Rest via HTTP
+      run: npm run test-rest-external
+
+    - name: Rodar os testes External de API GraphQL via HTTP
+      run: npm run test-graphql-external
