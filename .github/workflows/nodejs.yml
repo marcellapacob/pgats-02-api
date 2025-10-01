@@ -32,7 +32,7 @@ jobs:
       run: npm start &
 
     - name: Esperar a API estar funcionando
-      run: npx wait-on --timeout 15000 http://localhost:4000/graphql
+      run: npx wait-on --timeout 30000 http://localhost:4000/graphql
 
     - name: Rodar os testes de API via Controller
       run: npm run test-controller
