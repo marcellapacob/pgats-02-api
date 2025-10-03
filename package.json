@@ -2,12 +2,15 @@
   "name": "pgats-02-api",
   "version": "1.0.0",
   "description": "Esta API permite o registro, login, consulta de usuários e transferências de valores entre usuários. O objetivo é servir de base para estudos de testes e automação de APIs.",
-  "main": "graphql/app.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node graphql/app.js",
-    "test-controller": "mocha test/controller/**/*.test.js --timeout 10000 --reporter mochawesome",
-    "test-rest-external": "mocha test/rest/external/**/*.test.js --timeout 10000 --reporter mochawesome",
-    "test-graphql-external": "mocha test/graphql/external/**/*.test.js --timeout 10000 --reporter mochawesome"
+   "test": "mocha 'test/**/*.test.js' --timeout 10000 --reporter mochawesome",
+    "test-rest-external": "mocha 'test/rest/external/**/*.test.js' --timeout 10000 --reporter mochawesome",
+    "test-rest-controller": "mocha 'test/rest/controller/**/*.test.js' --timeout 10000 --reporter mochawesome",
+    "test-graphql-external": "mocha 'test/graphql/external/**/*.test.js' --timeout 10000 --reporter mochawesome",
+    "test-graphql-controller": "mocha 'test/graphql/controller/**/*.test.js' --timeout 10000 --reporter mochawesome",
+    "start-rest": "node server.js",
+    "start-graphql": "node graphql/server.js"
   },
   "keywords": [],
   "author": "",
