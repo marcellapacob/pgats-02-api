@@ -1,20 +1,30 @@
 const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-const userController = require('./controller/userController');
-const transferController = require('./controller/transferController');
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./graphql/typeDefs');
+const resolvers = require('./graphql/resolvers');
+const authenticate = require('./graphql/authenticate');
+
+
+const transferController = require('./rest/controller/transferController');
 
 const app = express();
+
 app.use(express.json());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/users', userController);
-app.use('/transfers', transferController);
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.post('/transfers', transferController.create);
+
+async function startApolloServer() {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => authenticate(req)
+  });
+  await server.start();
+  server.applyMiddleware({ app, path: '/graphql' });
+}
+
+startApolloServer();
 
 module.exports = app;

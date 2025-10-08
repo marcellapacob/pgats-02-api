@@ -1,15 +1,18 @@
 // Bibliotecas
 const request = require('supertest');
 const { expect, use } = require('chai');
-
 const chaiExclude = require('chai-exclude');
-use(chaiExclude)
+use(chaiExclude);
 
 require('dotenv').config();
+
+let token;
 
 // Testes
 describe('Transfer', () => {
     describe('POST /transfers', () => {
+
+        // Antes de todos os testes, faz login e pega token
         before(async () => {
             const postLogin = require('../fixture/requisicoes/login/postLogin.json');
 
@@ -17,26 +20,27 @@ describe('Transfer', () => {
                 .post('/users/login')
                 .send(postLogin);
 
-            token = respostaLogin.body.token;
+            token = respostaLogin.body.token || null;
         });
 
         it('Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
             const postTransfer = require('../fixture/requisicoes/transferencias/postTransfer.json');
-            
+
             const resposta = await request(process.env.BASE_URL_REST)
                 .post('/transfers')
                 .set('Authorization', `Bearer ${token}`)
                 .send(postTransfer);
 
             expect(resposta.status).to.equal(201);
-            
-            // Validação com um Fixture
-            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
+
+            // Validação com um fixture
+            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json');
             expect(resposta.body)
                 .excluding('date')
                 .to.deep.equal(respostaEsperada);
         });
 
+        // Testes de erros de negócio
         const testesDeErrosDeNegocio = require('../fixture/requisicoes/transferencias/postTransferWithErrors.json');
         testesDeErrosDeNegocio.forEach(teste => {
             it(`Testando a regra relacionada a ${teste.nomeDoTeste}`, async () => {
@@ -46,9 +50,9 @@ describe('Transfer', () => {
                     .post('/transfers')
                     .set('Authorization', `Bearer ${token}`)
                     .send(teste.postTransfer);
-                
+
                 expect(resposta.status).to.equal(teste.statusCode);
-                expect(resposta.body).to.have.property('error', teste.mensagemEsperada)
+                expect(resposta.body).to.have.property('error', teste.mensagemEsperada);
             });
         });
     });

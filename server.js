@@ -1,10 +1,7 @@
 const app = require('./app');
 
-app.get('/health', (req, res) => res.status(200).json({ ok: true }));
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor REST rodando na porta ${PORT}`);
+});
