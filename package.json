@@ -9,7 +9,7 @@
     "test-controller": "mocha 'test/controller/**/*.test.js' --timeout 10000 --reporter mochawesome",
     "start": "node server.js",
     "start-graphql": "node graphql/server.js",
-    "test:ci": "node server.js & npx wait-on http://localhost:3000/health && npm test"
+    "test:ci": "node server.js & npx wait-on http://localhost:4000/health && npm test"
   },
   "keywords": [],
   "author": "",
