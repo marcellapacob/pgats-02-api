@@ -78,7 +78,7 @@ describe('Transfer Controller', () => {
             expect(resposta.status).to.equal(201);
             
             // Validação com um Fixture
-            const respostaEsperada = require('../../test/rest/fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
+            const respostaEsperada = require('../fixture/requisicoes/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
             delete resposta.body.date;
             delete respostaEsperada.date; 
             expect(resposta.body).to.deep.equal(respostaEsperada);
