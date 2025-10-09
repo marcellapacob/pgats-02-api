@@ -4,10 +4,10 @@ const sinon = require('sinon');
 const { expect } = require('chai');
 
 // Aplicação
-const app = require('../../../app');
+const app = require('../../app');
 
 // Mock
-const transferService = require('../../../service/transferService');
+const transferService = require('../../service/transferService');
 
 // Testes
 describe('Transfer Controller', () => {
@@ -78,7 +78,7 @@ describe('Transfer Controller', () => {
             expect(resposta.status).to.equal(201);
             
             // Validação com um Fixture
-            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
+            const respostaEsperada = require('../../test/rest/fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json')
             delete resposta.body.date;
             delete respostaEsperada.date; 
             expect(resposta.body).to.deep.equal(respostaEsperada);

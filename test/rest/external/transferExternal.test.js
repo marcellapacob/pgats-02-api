@@ -34,7 +34,7 @@ describe('Transfer', () => {
             expect(resposta.status).to.equal(201);
 
             // Validação com um fixture
-            const respostaEsperada = require('../fixture/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json');
+            const respostaEsperada = require('../fixture/requisicoes/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json');
             expect(resposta.body)
                 .excluding('date')
                 .to.deep.equal(respostaEsperada);

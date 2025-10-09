@@ -5,7 +5,8 @@ const resolvers = require('./graphql/resolvers');
 const authenticate = require('./graphql/authenticate');
 
 
-const transferController = require('./test/rest/controller/transferController');
+const transferController = require('./rest/controllers/transferController');
+const authController = require('./rest/controllers/authController');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.post('/transfers', transferController.create);
+app.post('/login', authController.login);
 
 async function startApolloServer() {
   const server = new ApolloServer({
