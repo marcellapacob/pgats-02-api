@@ -5,7 +5,7 @@ const resolvers = require('./graphql/resolvers');
 const authenticate = require('./graphql/authenticate');
 
 
-const transferController = require('./rest/controllers/transferController');
+const transferController = require('./rest/controllers/transferController.test.js');
 const authController = require('./rest/controllers/authController');
 
 const app = express();
