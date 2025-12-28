@@ -13,7 +13,8 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use(routes);
 
-async function startApolloServer() {
+// Iniciar Apollo Server de forma assíncrona sem bloquear
+(async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -21,8 +22,6 @@ async function startApolloServer() {
   });
   await server.start();
   server.applyMiddleware({ app, path: '/graphql' });
-}
-
-startApolloServer();
+})();
 
 module.exports = app;
