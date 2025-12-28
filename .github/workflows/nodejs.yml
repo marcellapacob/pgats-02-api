@@ -22,6 +22,7 @@ jobs:
       run: |
         npm run start-rest > /tmp/rest-server.log 2>&1 &
         node wait-server.js http://localhost:3000 60
+        node wait-server.js http://localhost:3000/graphql 60
 
     - name: Run REST Tests
       run: npm run test-rest
