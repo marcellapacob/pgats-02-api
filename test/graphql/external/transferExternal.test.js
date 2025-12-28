@@ -8,11 +8,27 @@ describe('Testes de Transferência', () => {
     let token;
 
     before(async () => {
-        const loginUser = require('../fixture/requisicoes/login/loginUser.json');     
-        const respostaLogin = await request(baseUrl)
-            .post('')
-            .send(loginUser);
+        const loginUser = require('../fixture/requisicoes/login/loginUser.json');
 
+        // retry loop to tolerate CI startup delays
+        const maxAttempts = 60;
+        let attempt = 0;
+        let respostaLogin;
+        while (attempt < maxAttempts) {
+            try {
+                respostaLogin = await request(baseUrl)
+                    .post('')
+                    .send(loginUser);
+                if (respostaLogin && respostaLogin.body && respostaLogin.body.data && respostaLogin.body.data.loginUser) break;
+            } catch (err) {
+                // swallow and retry
+            }
+            attempt++;
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        if (!respostaLogin || !respostaLogin.body || !respostaLogin.body.data || !respostaLogin.body.data.loginUser) {
+            throw new Error(`GraphQL login failed after ${maxAttempts} attempts`);
+        }
         token = respostaLogin.body.data.loginUser.token;
     });
 
