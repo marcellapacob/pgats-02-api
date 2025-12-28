@@ -4,61 +4,42 @@ const { expect } = require('chai');
 
 // Testes
 describe('Testes de Transferência', () => {
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = 'http://localhost:4000/graphql';
     let token;
 
     before(async () => {
+        const loginUser = require('../fixture/requisicoes/login/loginUser.json');     
         const respostaLogin = await request(baseUrl)
-            .post('/users/login')
-            .send({
-                username: 'julio',
-                password: '123456'
-            });
+            .post('')
+            .send(loginUser);
 
-        token = respostaLogin.body.token;
+        token = respostaLogin.body.data.loginUser.token;
     });
 
-    it('Transferência com sucesso retorna 201', async () => {
+    it('Validar que é possível transferir grana entre duas contas', async () => {
+        const createTransfer = require ('../fixture/requisicoes/transferencia/createTransfer.json');
         const resposta = await request(baseUrl)
-            .post('/transfers')
+            .post('')
             .set('Authorization', `Bearer ${token}`)
-            .send({
-                from: "julio",
-                to: "priscila",
-                value: 100
-            });
+            .send(createTransfer);
 
-        expect(resposta.status).to.equal(201);
-        const respostaEsperada = require('../../rest/fixture/requisicoes/respostas/quandoInformoValoresValidosEuTenhoSucessoCom201Created.json');
-        delete resposta.body.date;
-        delete respostaEsperada.date;
-        expect(resposta.body).to.deep.equal(respostaEsperada);
+        expect(resposta.status).to.equal(200);
+        expect(resposta.body).to.have.nested.property('data.createTransfer');
+        const created = resposta.body.data.createTransfer;
+        expect(created).to.include({ from: createTransfer.variables.from, to: createTransfer.variables.to });
+        expect(created.value).to.equal(createTransfer.variables.value);
     });
 
-    it('Sem saldo disponível retorna 400', async () => {
+    it('Sem saldo disponível', async () => {
+        const createTransfer = require ('../fixture/requisicoes/transferencia/createTransfer.json');
+        createTransfer.variables.value = 10000.01; // Valor alto para garantir saldo insuficiente
         const resposta = await request(baseUrl)
-            .post('/transfers')
+            .post('')
             .set('Authorization', `Bearer ${token}`)
-            .send({
-                from: "julio",
-                to: "priscila",
-                value: 999999 
-            });
+            .send(createTransfer);
 
-        expect(resposta.status).to.equal(400);
-        expect(resposta.body).to.have.property('error').that.includes('Saldo insuficiente');
-    });
-
-    it('Token de autenticação não informado retorna 401', async () => {
-        const resposta = await request(baseUrl)
-            .post('/transfers')
-            .send({
-                from: "julio",
-                to: "priscila",
-                value: 100
-            });
-
-        expect(resposta.status).to.equal(401);
-        expect(resposta.body).to.have.property('message').that.includes('Token não fornecido');
+        expect(resposta.status).to.equal(200);
+        expect(resposta.body).to.have.property('errors');
+        expect(resposta.body.errors[0].message).to.include('Saldo insuficiente');
     });
 });

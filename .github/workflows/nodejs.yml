@@ -18,21 +18,18 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Start Rest Server
+    - name: Start REST Server
       run: |
         npm run start-rest &
-        npx wait-on tcp:3000 --timeout 60000
+        npx wait-on http://localhost:3000 --timeout 60000
 
-    - name: Run Rest External Tests
-      run: npm run test-rest-external
-
-    - name: Run Rest Controller Tests
-      run: npm run test-rest-controller
+    - name: Run REST Tests
+      run: npm run test-rest
 
     - name: Start GraphQL Server
       run: |
         npm run start-graphql &
-        npx wait-on tcp:4000 --timeout 60000
+        npx wait-on http://localhost:4000/graphql --timeout 60000
 
     - name: Run GraphQL External Tests
       run: npm run test-graphql-external

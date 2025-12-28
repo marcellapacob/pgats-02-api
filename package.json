@@ -13,7 +13,8 @@
     "test-external": "mocha 'test/external/**/*.test.js' --timeout 10000 --reporter mochawesome",
     "test-rest-controller": "mocha 'test/rest/controller/**/*.test.js' --timeout 10000 --reporter mochawesome",
     "test-rest-external": "mocha 'test/rest/external/**/*.test.js' --timeout 10000 --reporter mochawesome",
-    "test-rest": "npm run test-rest-external && npm run test-rest-controller"
+    "test-rest": "npm run test-rest-external && npm run test-rest-controller",
+    "test-graphql-external": "mocha 'test/graphql/external/**/*.test.js' --timeout 10000 --reporter mochawesome"
   },
   "dependencies": {
     "apollo-server-express": "^3.13.0",
