@@ -4,7 +4,7 @@ const { expect } = require('chai');
 
 // Testes
 describe('Testes de Transferência', () => {
-    const baseUrl = 'http://localhost:4000/graphql';
+    const baseUrl = (process.env.BASE_URL_GRAPHQL || 'http://localhost:4000') + '/graphql';
     let token;
 
     before(async () => {

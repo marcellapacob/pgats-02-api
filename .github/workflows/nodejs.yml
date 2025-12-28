@@ -26,10 +26,7 @@ jobs:
     - name: Run REST Tests
       run: npm run test-rest
 
-    - name: Start GraphQL Server
-      run: |
-        npm run start-graphql > /tmp/graphql-server.log 2>&1 &
-        node wait-server.js http://localhost:4000/graphql 60
-
     - name: Run GraphQL External Tests
+      env:
+        BASE_URL_GRAPHQL: http://localhost:3000
       run: npm run test-graphql-external
